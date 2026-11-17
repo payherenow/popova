@@ -340,44 +340,17 @@
   </main>
 
   <script>
-  async function copyWithFeedback(button, text) {
-    const originalHTML = button.innerHTML;
+ function copyWithFeedback(button, text) {
+  navigator.clipboard.writeText(text);
 
-    button.classList.add('copied');
-    button.innerHTML = 'Скопійовано ✓';
+  const originalHTML = button.innerHTML;
+  button.classList.add('copied');
+  button.innerHTML = 'Скопійовано ✓';
 
-    try {
-        if (navigator.clipboard && window.isSecureContext) {
-            await navigator.clipboard.writeText(text);
-        } else {
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            textarea.style.position = 'fixed';
-            textarea.style.opacity = '0';
-            document.body.appendChild(textarea);
-            textarea.select();
-
-            const successful = document.execCommand('copy');
-            textarea.remove();
-
-            if (!successful) {
-                throw new Error('Copy failed');
-            }
-        }
-
-        setTimeout(() => {
-            button.classList.remove('copied');
-            button.innerHTML = originalHTML;
-        }, 1500);
-
-    } catch (error) {
-        button.classList.remove('copied');
-        button.innerHTML = 'Не вдалося скопіювати';
-
-        setTimeout(() => {
-            button.innerHTML = originalHTML;
-        }, 1500);
-    }
+  setTimeout(() => {
+    button.innerHTML = originalHTML;
+    button.classList.remove('copied');
+  }, 1500);
 }
   </script>
 </body>
