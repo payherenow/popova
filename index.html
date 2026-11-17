@@ -158,13 +158,26 @@
     }
 
     .btn.copied {
-      justify-content: center;
-      background: linear-gradient(135deg, #35c978, #159b55) !important;
-      border-color: rgba(255,255,255,.55) !important;
-      color: #fff !important;
-      box-shadow: 0 6px 20px rgba(24,155,84,.25) !important;
-      animation: copiedPop .25s ease both;
+    .btn.info-btn.copied,
+.btn.copied {
+    background: linear-gradient(135deg, #16a34a, #15803d) !important;
+    color: #ffffff !important;
+    border: 1px solid #22c55e !important;
+    box-shadow: 0 0 18px rgba(34, 197, 94, 0.45) !important;
+    animation: copiedPop 0.3s ease;
+}
+
+@keyframes copiedPop {
+    0% {
+        transform: scale(1);
     }
+    50% {
+        transform: scale(1.04);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
 
     .telegram-btn {
       background: linear-gradient(135deg, #229ed9, #087bb5);
