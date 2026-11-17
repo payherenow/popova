@@ -317,7 +317,7 @@
       </a>
 
       <button class="btn viber-btn" type="button"
-        onclick="copyWithFeedback(this, '+380970353280')">
+        onclick="copyWithFeedback(this, '+380 93 280 01 24')">
         <span aria-hidden="true">✆</span>
         <span class="btn-text">
           <span class="btn-title">СКОПІЮВАТИ VIBER</span>
@@ -338,41 +338,46 @@
   </main>
 
   <script>
-    async function copyWithFeedback(button, text) {
-      try {
+  async function copyWithFeedback(button, text) {
+    const originalHTML = button.innerHTML;
+
+    button.classList.add('copied');
+    button.innerHTML = 'Скопійовано ✓';
+
+    try {
         if (navigator.clipboard && window.isSecureContext) {
-          await navigator.clipboard.writeText(text);
+            await navigator.clipboard.writeText(text);
         } else {
-          const field = document.createElement('textarea');
-          field.value = text;
-          field.style.position = 'fixed';
-          field.style.opacity = '0';
-          document.body.appendChild(field);
-          field.select();
-          const copied = document.execCommand('copy');
-          field.remove();
-          if (!copied) throw new Error('Copy failed');
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+
+            const successful = document.execCommand('copy');
+            textarea.remove();
+
+            if (!successful) {
+                throw new Error('Copy failed');
+            }
         }
 
-        const originalHTML = button.innerHTML;
-        const originalClass = button.className;
-        button.classList.add('copied');
-        button.innerHTML = 'Скопійовано ✓';
-
-        window.setTimeout(() => {
-          button.innerHTML = originalHTML;
-          button.className = originalClass;
+        setTimeout(() => {
+            button.classList.remove('copied');
+            button.innerHTML = originalHTML;
         }, 1500);
-      } catch (error) {
-        button.textContent = 'Не вдалося скопіювати';
-        window.setTimeout(() => window.location.reload(), 1200);
-      }
+
+    } catch (error) {
+        button.classList.remove('copied');
+        button.innerHTML = 'Не вдалося скопіювати';
+
+        setTimeout(() => {
+            button.innerHTML = originalHTML;
+        }, 1500);
     }
+}
   </script>
 </body>
 </html>
-'''
 
-path = Path("/mnt/data/popova-payment-site.html")
-path.write_text(html, encoding="utf-8")
-print(f"Створено: {path} ({len(html)} символів)")
