@@ -1,1 +1,367 @@
+from pathlib import Path
 
+html = r'''<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7c3d7">
+  <title>POPOVA — магазин косметики</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    :root {
+      --pink: #e879a7;
+      --pink-dark: #bd4f7d;
+      --pink-light: #ffe3ef;
+      --ink: #542d40;
+      --muted: #956d80;
+      --green: #20a765;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 1px 0 30px;
+      color: var(--ink);
+      font-family: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background:
+        radial-gradient(ellipse at 12% 5%, rgba(255,255,255,.88) 0%, transparent 35%),
+        radial-gradient(ellipse at 90% 22%, rgba(255,190,218,.72) 0%, transparent 38%),
+        linear-gradient(145deg, #f9dce8 0%, #eeb6cf 48%, #f8dce9 100%);
+      background-attachment: fixed;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 460px;
+      margin: 0 auto;
+      padding: 25px 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 27px;
+      padding-top: 10px;
+    }
+
+    .brand-mark {
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 14px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #fff8fb;
+      font-family: Georgia, serif;
+      font-size: 34px;
+      font-style: italic;
+      background: linear-gradient(145deg, #f6b4d0, #c75b8b);
+      border: 1px solid rgba(255,255,255,.8);
+      box-shadow: 0 8px 25px rgba(160,65,108,.24), inset 0 1px 0 rgba(255,255,255,.65);
+      animation: markFloat 3.5s ease-in-out infinite;
+    }
+
+    .header h1 {
+      margin: 0;
+      color: #a83f70;
+      font-size: 29px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-shadow: 0 3px 15px rgba(177,75,120,.13);
+    }
+
+    .header p {
+      margin: 7px 0 0;
+      color: #88536d;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2.4px;
+      text-transform: uppercase;
+    }
+
+    .card {
+      padding: 19px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255,255,255,.78);
+      border-radius: 20px;
+      background: linear-gradient(145deg, rgba(255,250,253,.88), rgba(255,235,244,.78));
+      box-shadow: 0 9px 28px rgba(151,65,105,.12), inset 0 1px 0 rgba(255,255,255,.9);
+      backdrop-filter: blur(10px);
+    }
+
+    .card-title {
+      margin-bottom: 10px;
+      color: #a94372;
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .value {
+      margin-top: 6px;
+      color: #593246;
+      font-size: 15px;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    .subtext {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .btn {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      min-height: 58px;
+      padding: 15px 16px;
+      margin: 12px 0;
+      border: 1px solid rgba(255,255,255,.72);
+      border-radius: 16px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 800;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform .2s ease, filter .2s ease, box-shadow .25s ease, background .25s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .info-btn {
+      justify-content: flex-start;
+      color: #71344f;
+      text-align: left;
+      background: linear-gradient(135deg, #f6b4d0 0%, #df78a7 100%);
+      border: 1px solid rgba(255,255,255,.8);
+      box-shadow: 0 5px 17px rgba(183,77,125,.2), inset 0 1px 0 rgba(255,255,255,.45);
+      animation: pinkGlow 3.2s ease-in-out infinite;
+    }
+
+    .btn-text { min-width: 0; text-align: left; }
+    .btn-title { font-size: 15px; font-weight: 800; }
+    .btn-sub {
+      margin-top: 3px;
+      color: #713d56;
+      font-size: 12px;
+      font-weight: 600;
+      opacity: .9;
+      overflow-wrap: anywhere;
+    }
+
+    .btn.copied {
+      justify-content: center;
+      background: linear-gradient(135deg, #35c978, #159b55) !important;
+      border-color: rgba(255,255,255,.55) !important;
+      color: #fff !important;
+      box-shadow: 0 6px 20px rgba(24,155,84,.25) !important;
+      animation: copiedPop .25s ease both;
+    }
+
+    .telegram-btn {
+      background: linear-gradient(135deg, #229ed9, #087bb5);
+      box-shadow: 0 7px 18px rgba(8,123,181,.2);
+    }
+
+    .viber-btn {
+      background: linear-gradient(135deg, #8170ed, #6048c9);
+      box-shadow: 0 7px 18px rgba(96,72,201,.2);
+    }
+
+    .btn img { width: 23px; height: 23px; }
+    .btn svg { width: 25px; height: 25px; flex: 0 0 auto; }
+
+    .btn:active { transform: scale(.975); }
+    @media (hover: hover) {
+      .btn:hover { filter: brightness(1.04); transform: translateY(-2px); }
+    }
+
+    .footer-note {
+      padding: 14px 16px;
+      border: 1px solid rgba(255,255,255,.75);
+      border-left: 4px solid #d66b99;
+      border-radius: 14px;
+      color: #87566d;
+      background: rgba(255,247,251,.76);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    /* Плавна поява блоків один за одним */
+    .container > * {
+      opacity: 0;
+      animation: fadeUp .7s ease forwards;
+    }
+    .container > *:nth-child(1) { animation-delay: .08s; }
+    .container > *:nth-child(2) { animation-delay: .22s; }
+    .container > *:nth-child(3) { animation-delay: .34s; }
+    .container > *:nth-child(4) { animation-delay: .44s; }
+    .container > *:nth-child(5) { animation-delay: .54s; }
+    .container > *:nth-child(6) { animation-delay: .64s; }
+    .container > *:nth-child(7) { animation-delay: .74s; }
+    .container > *:nth-child(8) { animation-delay: .84s; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pinkGlow {
+      0%, 100% { box-shadow: 0 5px 17px rgba(183,77,125,.17), 0 0 7px rgba(232,121,167,.12); }
+      50% { box-shadow: 0 7px 23px rgba(183,77,125,.28), 0 0 17px rgba(232,121,167,.28); }
+    }
+    @keyframes markFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    @keyframes copiedPop {
+      from { transform: scale(.98); }
+      to { transform: scale(1); }
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 21px 16px; }
+      .header h1 { font-size: 27px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+      .container > * { opacity: 1 !important; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <header class="header">
+      <div class="brand-mark" aria-hidden="true">P</div>
+      <h1>POPOVA</h1>
+      <p>Косметика • догляд • краса</p>
+    </header>
+
+    <section class="card">
+      <div class="card-title">💗 Реквізити для оплати</div>
+      <div class="value">ФОП Токарська Мар'яна Михайлівна</div>
+      <div class="subtext" style="margin-top:8px;">⬇️ Скопіюйте потрібні реквізити ⬇️</div>
+    </section>
+
+    <button class="btn info-btn" type="button"
+      onclick="copyWithFeedback(this, 'UA233052990000026003010815285')">
+      <span class="btn-text">
+        <span class="btn-title">💳 СКОПІЮВАТИ IBAN</span>
+        <span class="btn-sub">UA233052990000026003010815285</span>
+      </span>
+    </button>
+
+    <button class="btn info-btn" type="button"
+      onclick="copyWithFeedback(this, '3155709247')">
+      <span class="btn-text">
+        <span class="btn-title">🏢 СКОПІЮВАТИ ЄДРПОУ</span>
+        <span class="btn-sub">3155709247</span>
+      </span>
+    </button>
+
+    <button class="btn info-btn" type="button"
+      onclick="copyWithFeedback(this, 'Оплата за товар')">
+      <span class="btn-text">
+        <span class="btn-title">📝 СКОПІЮВАТИ ПРИЗНАЧЕННЯ</span>
+        <span class="btn-sub">Оплата за товар</span>
+      </span>
+    </button>
+
+    <section class="card">
+      <div class="card-title">📦 Після оплати</div>
+      <div class="subtext">
+        Надішліть менеджеру скріншот квитанції про успішну оплату та заповніть шаблон:
+      </div>
+
+      <button class="btn info-btn" type="button"
+        onclick="copyWithFeedback(this, '👤 ПІБ:\n📍 Населений пункт:\n📦 Відділення НП:\n📱 Телефон отримувача:')">
+        <span class="btn-text">
+          <span class="btn-title">🤝 СКОПІЮВАТИ ШАБЛОН</span>
+          <span class="btn-sub">👤 ПІБ<br>📍 Населений пункт<br>📦 Відділення НП<br>📱 Телефон отримувача</span>
+        </span>
+      </button>
+    </section>
+
+    <section class="card">
+      <div class="card-title">📞 Зв’язок з магазином</div>
+
+      <a class="btn telegram-btn" href="https://t.me/koronaamazonamanager" target="_blank" rel="noopener noreferrer">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="">
+        ТЕЛЕГРАМ МЕНЕДЖЕР
+      </a>
+
+      <button class="btn viber-btn" type="button"
+        onclick="copyWithFeedback(this, '+380970353280')">
+        <span aria-hidden="true">✆</span>
+        <span class="btn-text">
+          <span class="btn-title">СКОПІЮВАТИ VIBER</span>
+          <span class="btn-sub" style="color:#fff;">+380 97 035 32 80</span>
+        </span>
+      </button>
+
+      <a class="btn telegram-btn" href="https://t.me/koronaamazona" target="_blank" rel="noopener noreferrer">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="">
+        ТЕЛЕГРАМ КАНАЛ
+      </a>
+    </section>
+
+    <div class="footer-note">
+      Для користувачів TikTok: якщо кнопки «Відкрити» або «Скопіювати» не працюють —
+      натисніть три крапки вгорі праворуч → «Відкрити в браузері».
+    </div>
+  </main>
+
+  <script>
+    async function copyWithFeedback(button, text) {
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const field = document.createElement('textarea');
+          field.value = text;
+          field.style.position = 'fixed';
+          field.style.opacity = '0';
+          document.body.appendChild(field);
+          field.select();
+          const copied = document.execCommand('copy');
+          field.remove();
+          if (!copied) throw new Error('Copy failed');
+        }
+
+        const originalHTML = button.innerHTML;
+        const originalClass = button.className;
+        button.classList.add('copied');
+        button.innerHTML = 'Скопійовано ✓';
+
+        window.setTimeout(() => {
+          button.innerHTML = originalHTML;
+          button.className = originalClass;
+        }, 1500);
+      } catch (error) {
+        button.textContent = 'Не вдалося скопіювати';
+        window.setTimeout(() => window.location.reload(), 1200);
+      }
+    }
+  </script>
+</body>
+</html>
+'''
+
+path = Path("/mnt/data/popova-payment-site.html")
+path.write_text(html, encoding="utf-8")
+print(f"Створено: {path} ({len(html)} символів)")
