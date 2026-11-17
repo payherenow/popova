@@ -353,41 +353,49 @@
 
   <script>
 async function copyWithFeedback(button, text) {
-    const originalHTML = button.innerHTML;
+  const originalHTML = button.innerHTML;
+  const originalClass = button.className;
 
-    try {
-        if (navigator.clipboard && window.isSecureContext) {
-            await navigator.clipboard.writeText(text);
-        } else {
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            textarea.style.position = 'fixed';
-            textarea.style.opacity = '0';
-            document.body.appendChild(textarea);
-            textarea.select();
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+    } else {
+      const field = document.createElement('textarea');
+      field.value = text;
+      field.style.position = 'fixed';
+      field.style.left = '-9999px';
+      field.style.top = '0';
+      
+      document.body.appendChild(field);
+      field.focus();
+      field.select();
+      
+      const copied = document.execCommand('copy');
+      field.remove();
 
-            const success = document.execCommand('copy');
-            textarea.remove();
+  if (!copied) {
+    throw new Error('Copy failed');
+  }
+}
 
-            if (!success) throw new Error('Copy failed');
-        }
+button.classList.add('copied');
+button.innerHTML = 'Скопійовано ✓';
 
-        button.classList.add('copied');
-        button.innerHTML = 'Скопійовано ✓';
-
-        setTimeout(() => {
-            button.innerHTML = originalHTML;
-            button.classList.remove('copied');
-        }, 1500);
-
+window.setTimeout(() => {
+  button.innerHTML = originalHTML;
+  button.className = originalClass;
+}, 1500);
     } catch (error) {
-        button.innerHTML = 'Не вдалося скопіювати';
-
-        setTimeout(() => {
-            button.innerHTML = originalHTML;
-        }, 1500);
+console.error('Помилка копіювання:', error);
+button.innerHTML = 'Не вдалося скопіювати ✕';
+    
+    window.setTimeout(() => {
+  button.innerHTML = originalHTML;
+  button.className = originalClass;
+}, 1500);
     }
 }
+
   </script>
 </body>
 </html>
